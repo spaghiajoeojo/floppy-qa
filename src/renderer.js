@@ -26,13 +26,12 @@
  * ```
  */
 
-import './index.css';
+import '@/index.css';
+import ChatComponent from '@/components/ChatComponent.vue';
+import MessageComponent from '@/components/MessageComponent.vue';
 import { createApp } from 'vue'
 
-createApp({
-  data() {
-    return {
-      count: 0
-    }
-  }
-}).mount('#app')
+const app = createApp();
+app.component(ChatComponent.name, ChatComponent);
+app.component(MessageComponent.name, MessageComponent);
+app.mount('#app');

@@ -10,9 +10,12 @@ if (require('electron-squirrel-startup')) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 300,
-    height: 600,
+    width: 400,
+    height: 640,
+    minWidth: 375,
+    minHeight: 375,
     autoHideMenuBar: true,
+    icon: './src/assets/floppy_icon.png',
   });
 
   // and load the index.html of the app.
