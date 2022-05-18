@@ -29,9 +29,11 @@
 import '@/index.css';
 import ChatComponent from '@/components/ChatComponent.vue';
 import MessageComponent from '@/components/MessageComponent.vue';
+import DropArea from '@/components/DropArea.vue';
 import { createApp } from 'vue'
 
 const app = createApp();
 app.component(ChatComponent.name, ChatComponent);
 app.component(MessageComponent.name, MessageComponent);
+app.component(DropArea.name, DropArea);
 app.mount('#app');

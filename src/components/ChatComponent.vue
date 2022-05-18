@@ -1,13 +1,15 @@
 <script>
 import Message from '@/models/Message';
 import MessageComponent from '@/components/MessageComponent.vue';
+import DropArea from '@/components/DropArea.vue';
 export default {
-  components: { MessageComponent },
+  components: { MessageComponent, DropArea },
   name: "ChatComponent",
   data() {
     return {
-      text: null,
-      messages: [new Message({ text: "Send me something...", from: "bot" })],
+      file: null,
+      textInput: null,
+      messages: [],
     };
   },
   watch: {
@@ -16,17 +18,23 @@ export default {
         const element = this.$refs.messages;
         element.scrollTo(0, element.scrollHeight);
       });
+    },
+    file() {
+      this.messages = [new Message({ text: `Ask me something about ${this.file.name}!`, from: "bot" })];
     }
   },
   methods: {
     sendMessage() {
-      const text = this.text;
+      const text = this.textInput;
       if (text) {
         this.messages = [...this.messages, new Message({ text, from: "me" })];
-        this.text = null;
+        this.textInput = null;
         setTimeout(() => {
-          this.messages = [...this.messages, new Message({ text, from: "bot" })];
-        }, Math.random() * 2000);
+          const content = this.file.content.split(' ');
+          const start = Math.random() * content.length;
+          const end = start + Math.random() * 10;
+          this.messages = [...this.messages, new Message({ text: content.slice(start, end).join(' '), from: "bot" })];
+        }, Math.random() * 1000);
       }
     },
   },
@@ -35,19 +43,21 @@ export default {
 
 <template>
   <div class="chat">
-    <div class="chat-messages" ref="messages">
-      <message-component
-        v-for="(message, index) in messages"
-        :key="index"
-        :message="message"
-      >
-      </message-component>
-    </div>
-
-    <form class="chat-bottom" v-on:submit.prevent="sendMessage">
-      <input type="text" v-model="text"/>
-      <button @click="sendMessage">Send</button>
-    </form>
+    <template v-if="file">
+      <div class="chat-messages" ref="messages">
+        <message-component
+          v-for="(message, index) in messages"
+          :key="index"
+          :message="message"
+        >
+        </message-component>
+      </div>
+      <form class="chat-bottom" v-on:submit.prevent="sendMessage">
+        <input type="text" v-model="textInput"/>
+        <button @click="sendMessage">Send</button>
+      </form>
+    </template>
+    <drop-area v-else v-model="file"></drop-area>
   </div>
 </template>
 
