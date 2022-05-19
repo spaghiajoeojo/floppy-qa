@@ -87,3 +87,10 @@ typings/
 
 # Electron-Forge
 out/
+
+# IDE
+.idea/
+
+# MODEL
+src/model/*.json
+src/model/*.bin

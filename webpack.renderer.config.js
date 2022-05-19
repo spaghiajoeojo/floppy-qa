@@ -2,6 +2,18 @@ const rules = require('./webpack.rules');
 const webpack = require('webpack');
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+const assets = [ 'model' ]; // folder exposed by static:// scheme
+
+const copyPlugin = new CopyWebpackPlugin(
+  {
+    patterns: assets.map(asset => ({
+      from: path.resolve(__dirname, 'src', asset),
+      to: path.resolve(__dirname, '.webpack/renderer', asset)
+    }))
+  }
+);
 
 rules.push({
   test: /\.css$/,
@@ -31,6 +43,7 @@ module.exports = {
         "__VUE_PROD_DEVTOOLS__": false,
     }),
     new VueLoaderPlugin(),
+    copyPlugin,
   ],
   devtool: 'source-map',
 };

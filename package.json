@@ -70,6 +70,7 @@
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.63",
     "@vercel/webpack-asset-relocator-loader": "^1.7.0",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.1",
     "electron": "18.1.0",
     "node-loader": "^2.0.0",
@@ -78,7 +79,9 @@
     "vue-template-compiler": "^2.6.14"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^3.17.0",
     "electron-squirrel-startup": "^1.0.0",
+    "tensorflow-qna-local-model": "^1.0.2",
     "vue": "^3.2.33"
   }
 }

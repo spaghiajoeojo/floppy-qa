@@ -1,5 +1,16 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, protocol, session } = require('electron');
 const path = require('path');
+
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'static', privileges: {
+      standard: true,
+      supportFetchAPI: true,
+      bypassCSP: true,
+      secure: true
+    }
+  }
+]);
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -8,6 +19,13 @@ if (require('electron-squirrel-startup')) {
 }
 
 const createWindow = () => {
+
+  session.defaultSession.protocol.registerFileProtocol('static', (request, callback) => {
+    const fileUrl = request.url.replace('static://', '');
+    const filePath = path.join(app.getAppPath(), '.webpack/renderer', fileUrl);
+    callback(filePath);
+  });
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 400,

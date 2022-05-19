@@ -1,5 +1,5 @@
 <script>
-import TextualFile from '@/models/TextualFile'
+import TextualFile from '@/classes/TextualFile'
 
 const fileReader = new FileReader();
 

@@ -1,5 +1,5 @@
 <script>
-import Message from '@/models/Message';
+import Message from '@/classes/Message';
 export default {
   name: "MessageComponent",
   props: {

@@ -1,7 +1,10 @@
 <script>
-import Message from '@/models/Message';
-import MessageComponent from '@/components/MessageComponent.vue';
-import DropArea from '@/components/DropArea.vue';
+import Message from "@/classes/Message";
+import MessageComponent from "@/components/MessageComponent.vue";
+import DropArea from "@/components/DropArea.vue";
+
+import qnaService from '@/services/qna';
+
 export default {
   components: { MessageComponent, DropArea },
   name: "ChatComponent",
@@ -10,7 +13,18 @@ export default {
       file: null,
       textInput: null,
       messages: [],
+      loading: false,
     };
+  },
+  computed: {
+    chatMessages() {
+      return this.loading
+        ? [
+            ...this.messages,
+            new Message({ text: "I'm thinking...", from: "bot" }),
+          ]
+        : this.messages;
+    },
   },
   watch: {
     messages() {
@@ -20,21 +34,33 @@ export default {
       });
     },
     file() {
-      this.messages = [new Message({ text: `Ask me something about ${this.file.name}!`, from: "bot" })];
-    }
+      this.messages = [
+        new Message({
+          text: `Ask me something about ${this.file.name}!`,
+          from: "bot",
+        }),
+      ];
+    },
   },
   methods: {
-    sendMessage() {
+    async sendMessage() {
       const text = this.textInput;
       if (text) {
         this.messages = [...this.messages, new Message({ text, from: "me" })];
         this.textInput = null;
+        this.loading = true;
         setTimeout(() => {
-          const content = this.file.content.split(' ');
-          const start = Math.random() * content.length;
-          const end = start + Math.random() * 10;
-          this.messages = [...this.messages, new Message({ text: content.slice(start, end).join(' '), from: "bot" })];
-        }, Math.random() * 1000);
+          qnaService.findAnswers(text, this.file.content).then((answers) => {
+            console.log(answers);
+            const [ans] = answers;
+            const msg = ans || "I don't know...";
+            this.loading = false;
+            this.messages = [
+              ...this.messages,
+              new Message({ text: msg, ...ans, from: "bot" }),
+            ];
+          });
+        }, 0);
       }
     },
   },
@@ -46,14 +72,14 @@ export default {
     <template v-if="file">
       <div class="chat-messages" ref="messages">
         <message-component
-          v-for="(message, index) in messages"
+          v-for="(message, index) in chatMessages"
           :key="index"
           :message="message"
         >
         </message-component>
       </div>
       <form class="chat-bottom" v-on:submit.prevent="sendMessage">
-        <input type="text" v-model="textInput"/>
+        <input type="text" v-model="textInput" />
         <button @click="sendMessage">Send</button>
       </form>
     </template>
@@ -92,7 +118,6 @@ export default {
   min-height: 1rem;
   display: flex;
   flex-grow: 1;
-  content: '';
+  content: "";
 }
-
 </style>
