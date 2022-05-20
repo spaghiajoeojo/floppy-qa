@@ -13,10 +13,13 @@ const file = ref(null);
 const emit = defineEmits(["update:modelValue"]);
 
 watch(file, () => {
-  emit(
-    "update:modelValue",
-    new TextualFile({ name: file.value.name, content: fileReader.result })
-  );
+  fileReader.readAsText(file.value);
+  fileReader.onloadend = () => {
+    emit(
+      "update:modelValue",
+      new TextualFile({ name: file.value.name, content: fileReader.result })
+    );
+  };
 });
 
 const selectFile = () => {

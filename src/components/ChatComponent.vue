@@ -1,8 +1,9 @@
 <script setup>
-import { ref, watch } from "vue";
+import { nextTick, ref, watch } from "vue";
 import Message from "@/classes/Message";
 import MessageComponent from "@/components/MessageComponent.vue";
 import DropArea from "@/components/DropArea.vue";
+import { findAnswers } from "@/services/qna";
 
 // DOM references
 const messageList = ref(null);
@@ -13,16 +14,21 @@ const textInput = ref(null);
 const messages = ref([]);
 const loading = ref(false);
 
-const sendMessage = () => {
+const sendMessage = (...args) => {
   const text = textInput.value;
   if (text) {
     messages.value = [...messages.value, new Message({ text, from: "me" })];
     textInput.value = null;
     loading.value = true;
-    setTimeout(() => {
-      console.log("question");
+    setTimeout(async () => {
+      const answers = await findAnswers(text, file.value.content);
+      console.log(answers);
+      messages.value = [
+        ...messages.value,
+        new Message({ text: 'I don\'t know...', ...answers[0], from: "bot" }),
+      ];
       loading.value = false;
-    }, 1000);
+    }, 0);
   }
 };
 
@@ -37,7 +43,9 @@ watch(file, () => {
 
 watch(messages, () => {
   if (messageList.value) {
-    messageList.value.scrollTo(0, messageList.value.scrollHeight);
+    nextTick(() => {
+      messageList.value.scrollTop = messageList.value.scrollHeight;
+    });
   }
 });
 </script>
