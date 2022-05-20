@@ -2,7 +2,7 @@
   "name": "floppy",
   "productName": "floppy",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "A digital assistant capable of answering questions about the content of text files",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",

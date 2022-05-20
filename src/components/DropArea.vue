@@ -1,49 +1,56 @@
-<script>
-import TextualFile from '@/classes/TextualFile'
+<script setup>
+import TextualFile from "@/classes/TextualFile";
+import { ref, watch } from "vue";
 
 const fileReader = new FileReader();
 
-export default {
-  name: "DropArea",
-  data() {
-    return {
-      file: null,
-    };
-  },
-  watch: {
-    file() {
-      fileReader.readAsText(this.file);
-      fileReader.onload = () => {
-        this.$emit("update:modelValue", new TextualFile({name: this.file.name, content: fileReader.result}));
-      };
-    },
-  },
-  methods: {
-    selectFile() {
-      this.$refs.inputSelector.click();
-    },
-    onDrop(files) {
-      console.log("File(s) dropped");
+// DOM references
+const inputSelector = ref(null);
 
-      if (files.length !== 1) return;
+// reactive
+const file = ref(null);
 
-      Array.from(files).forEach((f) => {
-        this.file = f;
-      });
-    },
-  },
+const emit = defineEmits(["update:modelValue"]);
+
+watch(file, () => {
+  emit(
+    "update:modelValue",
+    new TextualFile({ name: file.value.name, content: fileReader.result })
+  );
+});
+
+const selectFile = () => {
+  inputSelector.value.click();
+};
+
+const onDrop = (files) => {
+  console.log("File(s) dropped");
+
+  if (files.length !== 1) return;
+  const [single] = Array.from(files);
+  file.value = single;
 };
 </script>
 
 <template>
   <div class="drop-area">
-    <dialog open @drop.prevent="onDrop($event.dataTransfer.files)" @dragenter.prevent @dragover.prevent>
+    <dialog
+      open
+      @drop.prevent="onDrop($event.dataTransfer.files)"
+      @dragenter.prevent
+      @dragover.prevent
+    >
       <p>Please drop a .txt file here</p>
       <br />
       <p>- or -</p>
       <br />
       <button @click="selectFile">Select a file</button>
-      <input v-show="false" @change="onDrop($event.target.files)" type="file" ref="inputSelector" />
+      <input
+        v-show="false"
+        @change="onDrop($event.target.files)"
+        type="file"
+        ref="inputSelector"
+      />
     </dialog>
   </div>
 </template>

@@ -1,80 +1,60 @@
-<script>
+<script setup>
+import { ref, watch } from "vue";
 import Message from "@/classes/Message";
 import MessageComponent from "@/components/MessageComponent.vue";
 import DropArea from "@/components/DropArea.vue";
 
-import qnaService from '@/services/qna';
+// DOM references
+const messageList = ref(null);
 
-export default {
-  components: { MessageComponent, DropArea },
-  name: "ChatComponent",
-  data() {
-    return {
-      file: null,
-      textInput: null,
-      messages: [],
-      loading: false,
-    };
-  },
-  computed: {
-    chatMessages() {
-      return this.loading
-        ? [
-            ...this.messages,
-            new Message({ text: "I'm thinking...", from: "bot" }),
-          ]
-        : this.messages;
-    },
-  },
-  watch: {
-    messages() {
-      this.$nextTick(() => {
-        const element = this.$refs.messages;
-        element.scrollTo(0, element.scrollHeight);
-      });
-    },
-    file() {
-      this.messages = [
-        new Message({
-          text: `Ask me something about ${this.file.name}!`,
-          from: "bot",
-        }),
-      ];
-    },
-  },
-  methods: {
-    async sendMessage() {
-      const text = this.textInput;
-      if (text) {
-        this.messages = [...this.messages, new Message({ text, from: "me" })];
-        this.textInput = null;
-        this.loading = true;
-        setTimeout(() => {
-          qnaService.findAnswers(text, this.file.content).then((answers) => {
-            console.log(answers);
-            const [ans] = answers;
-            const msg = ans || "I don't know...";
-            this.loading = false;
-            this.messages = [
-              ...this.messages,
-              new Message({ text: msg, ...ans, from: "bot" }),
-            ];
-          });
-        }, 0);
-      }
-    },
-  },
+// reactive
+const file = ref(null);
+const textInput = ref(null);
+const messages = ref([]);
+const loading = ref(false);
+
+const sendMessage = () => {
+  const text = textInput.value;
+  if (text) {
+    messages.value = [...messages.value, new Message({ text, from: "me" })];
+    textInput.value = null;
+    loading.value = true;
+    setTimeout(() => {
+      console.log("question");
+      loading.value = false;
+    }, 1000);
+  }
 };
+
+watch(file, () => {
+  messages.value = [
+    new Message({
+      text: `Ask me something about ${file.value.name}!`,
+      from: "bot",
+    }),
+  ];
+});
+
+watch(messages, () => {
+  if (messageList.value) {
+    messageList.value.scrollTo(0, messageList.value.scrollHeight);
+  }
+});
 </script>
 
 <template>
   <div class="chat">
     <template v-if="file">
-      <div class="chat-messages" ref="messages">
+      <div class="chat-messages" ref="messageList">
         <message-component
-          v-for="(message, index) in chatMessages"
+          v-for="(message, index) in messages"
           :key="index"
           :message="message"
+        >
+        </message-component>
+        <message-component
+          v-if="loading"
+          :message="new Message({ text: 'I\'m thinking...', from: 'bot' })"
         >
         </message-component>
       </div>
