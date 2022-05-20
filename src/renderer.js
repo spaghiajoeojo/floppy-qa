@@ -33,7 +33,7 @@ import DropArea from '@/components/DropArea.vue';
 import { createApp } from 'vue'
 
 const app = createApp();
-app.component(ChatComponent.name, ChatComponent);
-app.component(MessageComponent.name, MessageComponent);
-app.component(DropArea.name, DropArea);
+app.component('ChatComponent', ChatComponent);
+app.component('MessageComponent', MessageComponent);
+app.component('DropArea', DropArea);
 app.mount('#app');

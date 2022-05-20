@@ -1,14 +1,9 @@
-<script>
-import Message from '@/classes/Message';
-export default {
-  name: "MessageComponent",
-  props: {
-      message: {
-          require: true,
-          type: Message,
-      }
-  }
-};
+<script setup>
+import Message from "@/classes/Message";
+
+defineProps({
+  message: { require: true, type: Message },
+});
 </script>
 
 <template>
@@ -30,7 +25,7 @@ export default {
 }
 
 .message::after {
-  content: '';
+  content: "";
   position: relative;
   top: 1.6rem;
   width: 0;
@@ -40,16 +35,16 @@ export default {
   border-top-color: #fff;
 }
 
-.message[data-from=me] {
+.message[data-from="me"] {
   align-self: flex-end;
-  background-color: var(--my-messages-background)
+  background-color: var(--my-messages-background);
 }
 
-.message:not([data-from=me]) {
+.message:not([data-from="me"]) {
   align-self: flex-start;
 }
 
-.message[data-from=me]::after {
+.message[data-from="me"]::after {
   left: calc(100% - 1.5rem);
   border-top-color: var(--my-messages-background);
 }
