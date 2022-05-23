@@ -1,42 +1,61 @@
-# Step 1
+# Step 2
 
-## Prerequisites
-1. Install node js (Version 14 LTS) from the [official download page](https://nodejs.org/it/download/)
-2. Clone this repository:
+## Building the chat 
+We are now ready to write our chat. Let's modify `ChatComponent.vue`.  
+First thing first we have to create a reference for all the messages in the conversation and manage user input to send a message:
 ```
-git clone https://github.com/spaghiajoeojo/floppy-qa.git
-```
+const messageText = ref(null);
+const messages = ref([]);
+const loading = ref(false);
 
-## A quick overview of the code
-In this repository we have a boilerplate to code an Electron app.  
+// methods
+const sendMessage = () => {
+  if (!messageText.value) return;
+  const text = messageText.value;
+  messages.value = [
+    ...messages.value,
+    new Message({ text, from: "me" }),
+  ];
+  loading.value = true;
+  setTimeout(() => {
+    messages.value = [
+      ...messages.value,
+      new Message({ text: `You said: ${text}` }),
+    ];
+    loading.value = true;
+  }, 1500);
+  messageText.value = null;
+};
 ```
-root folder
-├─ src
-│  ├─ assets        - images
-│  ├─ classes       - javascript objects used in this project
-│  ├─ components    - Vue components
-│  └─ model         - folder for our ML model
-├─ package.json
-└─ other configuration files
+Now we can integrate these lines of code in our template:
 ```
-This app is configured with webpack, the entry point of our web application is `index.html`.  
-In `main.js` we have the background process logic that is used to create a window and to register a custom protocol schema (`static://`) to load external files (more on that later).  
-In `renderer.js` we have all the application logic that will run in the renderer process like a browser.
-
-### Vue
-Our application is written using [Vue 3](https://vuejs.org/). You can browse the components already included in the `src/components` folder:
-- MessageComponent -> is a simple component used to render a message of a chat 
-- DropArea -> we need it to read text from a file dropped or selected
-- ChatComponent -> the true core of our application. At this moment it's logic less. 
-
-## Let's start our app
-First thing to do is check that everything works:
+<template>
+  <div class="chat">
+    <template v-if="file">
+      <div class="chat-messages" ref="messageList">
+        <message-component
+          v-for="(msg, index) in messages"
+          :key="index"
+          :message="msg"
+        >
+        </message-component>
+      </div>
+      <form class="chat-bottom" @submit.prevent="sendMessage">
+        <input v-model="messageText" type="text" />
+        <button>Send</button>
+      </form>
+    </template>
+    <drop-area v-else v-model="file"></drop-area>
+  </div>
+</template>
 ```
-npm start
+## One little thing more
+Right now if the conversation is quite long we have to scroll down for each new message sent or received. Let's fix it:
 ```
-should start our Electron app.
-
-To build our app as an executable we have to run:
+watch(messages, () => {
+  nextTick(() => {
+    messageList.value.scrollTop = messageList.value.scrollHeight;
+  });
+});
 ```
-npm run make
-```
+At every change of `messages` we scroll down after the render of the conversation.
