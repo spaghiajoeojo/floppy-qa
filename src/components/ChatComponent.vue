@@ -3,6 +3,7 @@ import { nextTick, ref, watch } from "vue";
 import Message from "@/classes/Message";
 import MessageComponent from "@/components/MessageComponent.vue";
 import DropArea from "@/components/DropArea.vue";
+import { findAnswers } from "@/services/qna";
 
 // DOM references
 const messageList = ref(null);
@@ -17,18 +18,21 @@ const loading = ref(false);
 const sendMessage = () => {
   if (!messageText.value) return;
   const text = messageText.value;
-  messages.value = [
-    ...messages.value,
-    new Message({ text, from: "me" }),
-  ];
+  messages.value = [...messages.value, new Message({ text, from: "me" })];
   loading.value = true;
   setTimeout(() => {
-    messages.value = [
-      ...messages.value,
-      new Message({ text: `You said: ${text}` }),
-    ];
-    loading.value = true;
-  }, 1500);
+    findAnswers(text, file.value.content).then((answers) => {
+      console.log(answers);
+      const [ans] = answers;
+      const msg = ans || "I don't know...";
+      loading.value = false;
+      messages.value = [
+        ...messages.value,
+        new Message({ text: msg, ...ans, from: "bot" }),
+      ];
+    });
+  }, 0);
+
   messageText.value = null;
 };
 
