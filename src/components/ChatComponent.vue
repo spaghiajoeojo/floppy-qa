@@ -3,6 +3,7 @@ import { nextTick, ref, watch } from "vue";
 import Message from "@/classes/Message";
 import MessageComponent from "@/components/MessageComponent.vue";
 import DropArea from "@/components/DropArea.vue";
+import MessageComponent1 from "./MessageComponent.vue";
 
 // DOM references
 const messageList = ref(null);
@@ -17,17 +18,14 @@ const loading = ref(false);
 const sendMessage = () => {
   if (!messageText.value) return;
   const text = messageText.value;
-  messages.value = [
-    ...messages.value,
-    new Message({ text, from: "me" }),
-  ];
+  messages.value = [...messages.value, new Message({ text, from: "me" })];
   loading.value = true;
   setTimeout(() => {
     messages.value = [
       ...messages.value,
       new Message({ text: `You said: ${text}` }),
     ];
-    loading.value = true;
+    loading.value = false;
   }, 1500);
   messageText.value = null;
 };
@@ -49,6 +47,10 @@ watch(messages, () => {
           :message="msg"
         >
         </message-component>
+        <message-component
+          v-if="loading"
+          :message="new Message({ text: 'I\'m thinking...', from: 'bot' })"
+        ></message-component>
       </div>
       <form class="chat-bottom" @submit.prevent="sendMessage">
         <input v-model="messageText" type="text" />
