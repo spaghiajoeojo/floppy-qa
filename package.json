@@ -79,7 +79,7 @@
     "vue-template-compiler": "^2.6.14"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^3.17.0",
+    "@tensorflow/tfjs": "^3.18.0",
     "electron-squirrel-startup": "^1.0.0",
     "tensorflow-qna-local-model": "^1.0.2",
     "vue": "^3.2.33"
