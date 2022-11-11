@@ -1,7 +1,14 @@
+# Floppy-QA
+This app will implement question answering on Electron framework, using Tensorflow.js models that rely on Transformer architecture and are fine-tuned for QA NLP tasks.
+
+## Presentation
+You can find here a copy of the presentation for the workshop "Day with Industrial partners", held at Masaryk University, used to introduce the work of the author:  
+[Presentation PDF](KM-Masaryk-Embedding NLP on user device.pdf)
+
 # Step 1
 
 ## Prerequisites
-1. Install node js (Version 14 LTS) from the [official download page](https://nodejs.org/it/download/)
+1. Install node js (Version 16 LTS) from the [official download page](https://nodejs.org/it/download/)
 2. Clone this repository:
 ```
 git clone https://github.com/spaghiajoeojo/floppy-qa.git
