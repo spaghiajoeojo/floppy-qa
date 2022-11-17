@@ -3,7 +3,7 @@ This app will implement question answering on Electron framework, using Tensorfl
 
 ## Presentation
 You can find here a copy of the presentation for the workshop "Day with Industrial partners", held at Masaryk University, used to introduce the work of the author:  
-[Presentation PDF](KM-Masaryk-Embedding NLP on user device.pdf)
+[Presentation PDF](KM-Masaryk-Embedding%20NLP%20on%20user%20device.pdf)
 
 # Step 1
 
