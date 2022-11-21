@@ -1,5 +1,7 @@
-import "@tensorflow/tfjs-backend-webgl";
+import * as tf from '@tensorflow/tfjs';
 import * as qna from "tensorflow-qna-local-model";
+
+tf.setBackend('webgl');
 
 const modelUrl = "static://model/model.json";
 const vocabUrl = "static://model/processed_vocab.json";
