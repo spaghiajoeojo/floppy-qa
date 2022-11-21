@@ -99,7 +99,7 @@ Now we can integrate these lines of code in our template:
   </div>
 </template>
 ```
-## One little thing more
+## One more little thing
 Right now if the conversation is quite long we have to scroll down for each new message sent or received. Let's fix it:
 ```
 watch(messages, () => {
@@ -135,9 +135,11 @@ This folder is a special directory in our app that can serve static files with a
 Let's create a new file `services/qna.js` and import tensorflow.js:
 
 ```
-// this is the backend recommended but you can use also @tensorflow/tfjs-backend-cpu
-import "@tensorflow/tfjs-backend-webgl";
+import * as tf from '@tensorflow/tfjs';
 import * as qna from "tensorflow-qna-local-model";
+
+// this is the backend recommended but you can also cpu 'cpu'
+tf.setBackend('webgl');
 ```
 
 We're going to initialize it at startup time
